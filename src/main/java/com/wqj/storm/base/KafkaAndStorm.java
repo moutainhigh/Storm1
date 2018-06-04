@@ -6,11 +6,9 @@ import backtype.storm.LocalCluster;
 import backtype.storm.StormSubmitter;
 import backtype.storm.generated.AlreadyAliveException;
 import backtype.storm.generated.InvalidTopologyException;
+import backtype.storm.spout.SchemeAsMultiScheme;
 import backtype.storm.topology.TopologyBuilder;
-import storm.kafka.BrokerHosts;
-import storm.kafka.KafkaSpout;
-import storm.kafka.SpoutConfig;
-import storm.kafka.ZkHosts;
+import storm.kafka.*;
 
 import java.util.ArrayList;
 
@@ -24,8 +22,8 @@ public class KafkaAndStorm {
         BrokerHosts brokerHosts = new ZkHosts("master:2181,slave1:2181,slave2:2181");
 
         SpoutConfig spoutConfig = new SpoutConfig(brokerHosts, "test", "", "spout111");
-//        spoutConfig.socketTimeoutMs = 60 * 1000 ;
-//        spoutConfig.scheme = new SchemeAsMultiScheme(new StringScheme()) ;
+        spoutConfig.socketTimeoutMs = 60 * 1000 ;
+        spoutConfig.scheme = new SchemeAsMultiScheme(new StringScheme()) ;
         //自定义的转换
 //        spoutConfig.scheme = new SchemeAsMultiScheme(new MessageScheme());
 
