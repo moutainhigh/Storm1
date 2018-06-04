@@ -24,7 +24,6 @@ public class KafkaAndStorm {
         BrokerHosts brokerHosts = new ZkHosts("master:2181,slave1:2181,slave2:2181");
 
         SpoutConfig spoutConfig = new SpoutConfig(brokerHosts, "test", "", "spout111");
-
 //        spoutConfig.socketTimeoutMs = 60 * 1000 ;
 //        spoutConfig.scheme = new SchemeAsMultiScheme(new StringScheme()) ;
         //自定义的转换
@@ -44,7 +43,6 @@ public class KafkaAndStorm {
             add("slave2");
         }};
         spoutConfig.zkPort = 2181;
-
         builder.setSpout("spout", new KafkaSpout(spoutConfig));
         builder.setBolt("bolt", new MykafkaBolt1(),1).shuffleGrouping("spout");
 

@@ -26,6 +26,7 @@ public class MykafkaBolt1 extends BaseRichBolt {
     public void execute(Tuple tuple) {
         Object input=  tuple.getValue(0);
 
+
         collector.emit(new Values("1"));
     }
 
