@@ -12,6 +12,8 @@ import storm.kafka.KafkaSpout;
 import storm.kafka.SpoutConfig;
 import storm.kafka.ZkHosts;
 
+import java.util.ArrayList;
+
 /**
  * @Auther: wqj
  * @Date: 2018/6/1 16:27
@@ -21,7 +23,7 @@ public class KafkaAndStorm {
     public static void main(String[] args) throws AlreadyAliveException, InvalidTopologyException {
         BrokerHosts brokerHosts = new ZkHosts("master:2181,slave1:2181,slave2:2181");
 
-        SpoutConfig spoutConfig = new SpoutConfig(brokerHosts, "test", "", "spout");
+        SpoutConfig spoutConfig = new SpoutConfig(brokerHosts, "test", "", "spout111");
 
 //        spoutConfig.socketTimeoutMs = 60 * 1000 ;
 //        spoutConfig.scheme = new SchemeAsMultiScheme(new StringScheme()) ;
@@ -36,11 +38,11 @@ public class KafkaAndStorm {
             conf.setNumWorkers(1);
 
         //本地模式保存offset
-//        spoutConfig.zkServers = new ArrayList<String>(){{
-//            add("master");
-//            add("slave1");
-//            add("slave2");
-//        }};
+        spoutConfig.zkServers = new ArrayList<String>(){{
+            add("master");
+            add("slave1");
+            add("slave2");
+        }};
         spoutConfig.zkPort = 2181;
 
         builder.setSpout("spout", new KafkaSpout(spoutConfig));
