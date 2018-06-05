@@ -18,6 +18,9 @@ public class MykafkaBolt1 extends BaseRichBolt {
 
     OutputCollector collector = null;
 
+    /**
+     *  以下加入redis进行存储,将数据存储在redis中
+     */
     public void prepare(Map map, TopologyContext topologyContext, OutputCollector outputCollector) {
 
         this.collector=outputCollector;
