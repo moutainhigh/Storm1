@@ -2,8 +2,10 @@ package com.wqj.storm.base.baseconsumer;
 
 import kafka.consumer.Consumer;
 import kafka.consumer.ConsumerConfig;
+import kafka.consumer.ConsumerIterator;
 import kafka.consumer.KafkaStream;
 import kafka.javaapi.consumer.ConsumerConnector;
+import kafka.message.MessageAndMetadata;
 import org.apache.commons.lang.StringUtils;
 
 import java.util.*;
@@ -14,14 +16,18 @@ import java.util.concurrent.*;
  * @Date: 2018/6/5 15:06
  * @Description: 基础kafka消费者
  */
-public class BaseConsumer {
+public class BaseConsumer implements Runnable {
     private ExecutorService executorService;
 
     private List<KafkaStream<byte[], byte[]>> streams;
 
+    private KafkaStream<byte[], byte[]> stream;
+
+    private Integer patitions;
+
     public BaseConsumer(String zkHost, String topic, String groupId, Integer threadNum, Integer patitions) throws Exception {
         Properties props = new Properties();
-
+        this.patitions = patitions;
         if (StringUtils.isBlank(groupId)) {
             groupId = "com.wqj.storm.base.baseconsumer.BaseConsumer.BaseConsumer";
         }
@@ -68,8 +74,13 @@ public class BaseConsumer {
 
     }
 
+    private BaseConsumer(KafkaStream<byte[], byte[]> stream) {
+        this.stream = stream;
+
+    }
+
     //策略 ,将数据刷到redis中,从redis中while获取
-    public void getConsumerMessage(){
+    public void getConsumerMessage() throws Exception {
 
 
         //不选择用callable  因为用Future.get()/f.get(3, TimeUnit.SECONDS);时候会阻塞
@@ -81,16 +92,28 @@ public class BaseConsumer {
 //                }
 //            });
 //        }
-        Future f;
+//        Future f;
 
-
-        executorService.execute(new Runnable() {
-            public void run() {
-
-            }
-        });
-
+        //开启三个线程,刚好与patition一致
+        for (int i = 0; i < patitions; i++) {
+            executorService.execute(new BaseConsumer(streams.get(i)));
+        }
     }
 
 
+    public void run() {
+        /**
+         * 不停地从stream读取新到来的消息，在等待新的消息时，hasNext()会阻塞
+         * 如果调用 `ConsumerConnector#shutdown`，那么`hasNext`会返回false
+         * */
+        ConsumerIterator<byte[], byte[]> it = stream.iterator();
+        while (it.hasNext()) {
+            MessageAndMetadata<byte[], byte[]> data = it.next();
+            String topic = data.topic();
+            int partition = data.partition();
+            long offset = data.offset();
+            String msg = new String(data.message());
+
+        }
+    }
 }
