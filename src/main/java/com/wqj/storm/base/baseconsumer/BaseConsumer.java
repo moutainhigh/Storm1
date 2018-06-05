@@ -7,10 +7,7 @@ import kafka.javaapi.consumer.ConsumerConnector;
 import org.apache.commons.lang.StringUtils;
 
 import java.util.*;
-import java.util.concurrent.Callable;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.Future;
+import java.util.concurrent.*;
 
 /**
  * @Auther: wqj
@@ -75,7 +72,7 @@ public class BaseConsumer {
     public void getConsumerMessage(){
 
 
-        //不选择用callable  因为用Future.get()时候会阻塞
+        //不选择用callable  因为用Future.get()/f.get(3, TimeUnit.SECONDS);时候会阻塞
 //        List<Future> list=new ArrayList<Future>();
 //        for (int i = 0; i <patitions ; i++) {
 //            executorService.submit(new Callable() {
@@ -84,6 +81,9 @@ public class BaseConsumer {
 //                }
 //            });
 //        }
+        Future f;
+
+
         executorService.execute(new Runnable() {
             public void run() {
 
