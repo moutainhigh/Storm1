@@ -102,6 +102,7 @@ public class BaseConsumer implements Runnable {
 
 
     public void run() {
+
         /**
          * 不停地从stream读取新到来的消息，在等待新的消息时，hasNext()会阻塞
          * 如果调用 `ConsumerConnector#shutdown`，那么`hasNext`会返回false
