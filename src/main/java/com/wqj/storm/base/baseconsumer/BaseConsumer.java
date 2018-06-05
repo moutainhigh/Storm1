@@ -109,8 +109,11 @@ public class BaseConsumer implements Runnable {
         ConsumerIterator<byte[], byte[]> it = stream.iterator();
         while (it.hasNext()) {
             MessageAndMetadata<byte[], byte[]> data = it.next();
+            //主题
             String topic = data.topic();
+            //分区id
             int partition = data.partition();
+            //偏移量
             long offset = data.offset();
             String msg = new String(data.message());
 
