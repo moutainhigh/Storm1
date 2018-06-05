@@ -19,7 +19,7 @@ import java.util.Map;
  */
 public class MykafkaBolt1 extends BaseRichBolt {
 
-    OutputCollector collector = null;
+    OutputCollector collector ;
 
     private JedisPool jedisPool;
 
